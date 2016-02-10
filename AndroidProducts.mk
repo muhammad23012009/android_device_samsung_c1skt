@@ -15,4 +15,4 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/full_i9300.mk
+    $(LOCAL_DIR)/full_c1skt.mk
