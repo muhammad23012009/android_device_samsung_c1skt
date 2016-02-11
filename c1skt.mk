@@ -33,7 +33,9 @@ PRODUCT_COPY_FILES += \
 
 # Audio
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/tiny_hw.xml:system/etc/sound/m0
+    $(LOCAL_PATH)/configs/c1skt.xml:system/etc/sound/c1skt \
+    $(LOCAL_PATH)/configs/c1ktt.xml:system/etc/sound/c1ktt \
+    $(LOCAL_PATH)/configs/c1lgt.xml:system/etc/sound/c1lgt
 
 # Sensors
 PRODUCT_PACKAGES += \
@@ -53,8 +55,7 @@ PRODUCT_PACKAGES += \
 
 # RIL
 PRODUCT_PACKAGES += \
-	libsamsung_symbols \
-	ril-wrapper
+	libsamsung_symbols
 
 # NFC
 PRODUCT_PACKAGES += \
@@ -91,7 +92,7 @@ $(call inherit-product, vendor/cm/config/nfc_enhanced.mk)
 
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.telephony.ril_class=SamsungExynos4RIL \
+    ro.telephony.ril_class=c1RIL \
     ro.telephony.call_ring.multiple=false \
     ro.telephony.call_ring.delay=3000
 

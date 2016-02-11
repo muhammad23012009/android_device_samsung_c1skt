@@ -1,6 +1,11 @@
 system/bin/glgps
+system/bin/rild
 system/lib/hw/sensors.smkd4x12.so
 system/lib/hw/gps.exynos4.so
+system/lib/libreference-ril.so
 system/lib/libakm.so
+system/lib/libril.so
 system/lib/libsec-ril.so
+system/lib/libsecril-client.so
+system/framework/telephony-common.jar
 system/usr/keylayout/sec_touchkey.kl
