@@ -7,5 +7,4 @@ system/lib/libakm.so
 system/lib/libril.so
 system/lib/libsec-ril.so
 system/lib/libsecril-client.so
-system/framework/telephony-common.jar
 system/usr/keylayout/sec_touchkey.kl
