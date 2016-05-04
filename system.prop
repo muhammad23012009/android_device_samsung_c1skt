@@ -1,6 +1,8 @@
 #
 # system.prop for smdk4x12
 #
+ro.ota.romname=flarerom-c1skt
+ro.ota.manifest=https://raw.githubusercontent.com/FlareROM/OTA/1.0-MM/1.0-MM/c1skt.xml
 
 dalvik.vm.dexopt-data-only=1
 rild.libpath=/system/lib/ril-wrapper.so
