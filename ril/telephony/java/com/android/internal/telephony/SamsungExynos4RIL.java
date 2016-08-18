@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2011 The CyanogenMod Project <http://www.cyanogenmod.org>
- * Copyright (C) 2014 The OmniROM Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +23,15 @@ import android.os.AsyncResult;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcel;
-import android.os.Registrant;
 import android.telephony.ModemActivityInfo;
+import android.os.Registrant;
 import android.telephony.Rlog;
 
 import android.telephony.PhoneNumberUtils;
 
 public class SamsungExynos4RIL extends RIL implements CommandsInterface {
+
+    private boolean setPreferredNetworkTypeSeen = false;
 
     //SAMSUNG STATES
     static final int RIL_REQUEST_GET_CELL_BROADCAST_CONFIG = 10002;
@@ -117,10 +118,10 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
     static final int RIL_UNSOL_MIP_CONNECT_STATUS = 11032;
 
     private Object mCatProCmdBuffer;
-    /* private Message mPendingGetSimStatus; */
 
     public SamsungExynos4RIL(Context context, int networkMode, int cdmaSubscription, Integer instanceId) {
         super(context, networkMode, cdmaSubscription, instanceId);
+        mQANElements = 5;
     }
 
     static String
@@ -130,7 +131,7 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
             default: return RIL.requestToString(request);
         }
     }
-
+ 
     static String
     responseToString(int response) {
         switch (response) {
@@ -139,9 +140,9 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
         }
     }
 
-
     @Override
-    protected RILRequest processSolicited (Parcel p) {
+    protected RILRequest
+    processSolicited (Parcel p) {
         int serial, error;
         boolean found = false;
 
@@ -296,7 +297,6 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
             case RIL_REQUEST_SIM_OPEN_CHANNEL: ret  = responseInts(p); break;
             case RIL_REQUEST_SIM_CLOSE_CHANNEL: ret  = responseVoid(p); break;
             case RIL_REQUEST_SIM_TRANSMIT_APDU_CHANNEL: ret = responseICC_IO(p); break;
-            case RIL_REQUEST_SIM_GET_ATR: ret = responseString(p); break;
             case RIL_REQUEST_NV_READ_ITEM: ret = responseString(p); break;
             case RIL_REQUEST_NV_WRITE_ITEM: ret = responseVoid(p); break;
             case RIL_REQUEST_NV_WRITE_CDMA_PRL: ret = responseVoid(p); break;
@@ -306,12 +306,6 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
             case RIL_REQUEST_GET_HARDWARE_CONFIG: ret = responseHardwareConfig(p); break;
             case RIL_REQUEST_SIM_AUTHENTICATION: ret =  responseICC_IOBase64(p); break;
             case RIL_REQUEST_SHUTDOWN: ret = responseVoid(p); break;
-            case RIL_REQUEST_GET_RADIO_CAPABILITY: ret =  responseRadioCapability(p); break;
-            case RIL_REQUEST_SET_RADIO_CAPABILITY: ret =  responseRadioCapability(p); break;
-            case RIL_REQUEST_START_LCE: ret = responseLceStatus(p); break;
-            case RIL_REQUEST_STOP_LCE: ret = responseLceStatus(p); break;
-            case RIL_REQUEST_PULL_LCEDATA: ret = responseLceData(p); break;
-            case RIL_REQUEST_GET_ACTIVITY_INFO: ret = responseActivityData(p); break;
             default:
                 throw new RuntimeException("Unrecognized solicited response: " + rr.mRequest);
             //break;
@@ -369,29 +363,11 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
                         mIccStatusChangedRegistrants.notifyRegistrants();
                     }
                     break;
-                case RIL_REQUEST_GET_RADIO_CAPABILITY: {
-                    // Ideally RIL's would support this or at least give NOT_SUPPORTED
-                    // but the hammerhead RIL reports GENERIC :(
-                    // TODO - remove GENERIC_FAILURE catching: b/21079604
-                    if (REQUEST_NOT_SUPPORTED == error ||
-                            GENERIC_FAILURE == error) {
-                        // we should construct the RAF bitmask the radio
-                        // supports based on preferred network bitmasks
-                        ret = makeStaticRadioCapability();
-                        error = 0;
-                    }
-                    break;
-                }
-                case RIL_REQUEST_GET_ACTIVITY_INFO:
-                    ret = new ModemActivityInfo(0, 0, 0,
-                            new int [ModemActivityInfo.TX_POWER_LEVELS], 0, 0);
-                    error = 0;
-                    break;
             }
 
-           if (error != 0) rr.onError(error, ret);
-        } 
-        if (error == 0) {
+            rr.onError(error, ret);
+        } else {
+
             if (RILJ_LOGD) riljLog(rr.serialString() + "< " + requestToString(rr.mRequest)
                     + " " + retToString(rr.mRequest, ret));
 
@@ -400,7 +376,6 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
                 rr.mResult.sendToTarget();
             }
         }
-
         return rr;
     }
 
@@ -449,26 +424,16 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
     processUnsolicited (Parcel p) {
         int dataPosition = p.dataPosition();
         int response = p.readInt();
-        Object ret;
-
-        try{switch(response) {
-            case RIL_UNSOL_STK_PROACTIVE_COMMAND: ret = responseString(p); break;
-            case RIL_UNSOL_STK_SEND_SMS_RESULT: ret = responseInts(p); break; // Samsung STK
-            default:
-                // Rewind the Parcel
-                p.setDataPosition(dataPosition);
-
-                // Forward responses that we are not overriding to the super class
-                super.processUnsolicited(p);
-                return;
-        }} catch (Throwable tr) {
-            Rlog.e(RILJ_LOG_TAG, "Exception processing unsol response: " + response +
-                " Exception: " + tr.toString());
-            return;
-        }
 
         switch(response) {
-            case RIL_UNSOL_STK_PROACTIVE_COMMAND:
+            case RIL_UNSOL_RIL_CONNECTED:
+                if (!setPreferredNetworkTypeSeen) {
+                    Rlog.v(RILJ_LOG_TAG, "SamsungExynos4RIL: connected, setting network type to " + mPreferredNetworkType);
+                    setPreferredNetworkType(mPreferredNetworkType, null);
+                }
+                break;
+            case RIL_UNSOL_STK_PROACTIVE_COMMAND: 
+                Object ret = responseString(p);
                 if (RILJ_LOGD) unsljLogRet(response, ret);
 
                 if (mCatProCmdRegistrant != null) {
@@ -480,8 +445,9 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
                     // does not get ignored (and breaks CatService).
                     mCatProCmdBuffer = ret;
                 }
-            break;
+                break;
             case RIL_UNSOL_STK_SEND_SMS_RESULT:
+                ret = responseInts(p); // Samsung STK
                 if (RILJ_LOGD) unsljLogRet(response, ret);
 
                 if (mCatSendSmsResultRegistrant != null) {
@@ -489,6 +455,14 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
                             new AsyncResult (null, ret, null));
                 }
             break;
+
+            default:
+                // Rewind the Parcel
+                p.setDataPosition(dataPosition);
+
+                // Forward responses that we are not overriding to the super class
+                super.processUnsolicited(p);
+                return;
         }
 
     }
@@ -505,11 +479,9 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
 
     private void
     constructGsmSendSmsRilRequest (RILRequest rr, String smscPDU, String pdu) {
-        rr.mParcel.writeInt(4);
+        rr.mParcel.writeInt(2);
         rr.mParcel.writeString(smscPDU);
         rr.mParcel.writeString(pdu);
-        rr.mParcel.writeString(Integer.toString(0));
-        rr.mParcel.writeString(Integer.toString(1));
     }
 
     /**
@@ -529,4 +501,16 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
         send(rr);
     }
 
+    @Override
+    public void setPreferredNetworkType(int networkType , Message response) {
+        riljLog("SamsungExynos4RIL: setPreferredNetworkType: " + networkType);
+
+        if (!setPreferredNetworkTypeSeen) {
+            riljLog("SamsungExynos4RIL: Need to reboot modem!");
+            setRadioPower(false, null);
+            setPreferredNetworkTypeSeen = true;
+        }
+
+        super.setPreferredNetworkType(networkType, response);
+    }
 }
