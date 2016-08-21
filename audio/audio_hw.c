@@ -525,10 +525,6 @@ static void set_incall_device(struct m0_audio_device *adev)
             device_type = SOUND_AUDIO_PATH_HANDSET;
             break;
     }
-
-    /* if output device isn't supported, open modem side to handset by default */
-    ALOGE("%s: ril_set_call_audio_path(%d)", __func__, device_type);
-    ril_set_call_audio_path(&adev->ril, device_type);
 }
 
 static void force_all_standby(struct m0_audio_device *adev)
