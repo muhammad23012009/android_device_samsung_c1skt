@@ -6,4 +6,3 @@ system/lib/libsec-ril.so
 system/lib/libfactoryutil.so
 system/lib/libomission_avoidance.so
 system/lib/libreference-ril.so
-system/usr/keylayout/sec_touchkey.kl
