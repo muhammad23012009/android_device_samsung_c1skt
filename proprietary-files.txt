@@ -26,7 +26,6 @@ system/lib/libMcRegistry.so
 system/lib/libMcVersion.so
 system/lib/libsecnativefeature.so
 system/usr/idc/sec_touchscreen.idc
-system/usr/keylayout/sec_touchkey.kl
 system/usr/idc/melfas_ts.idc
 system/usr/idc/sec_touchscreen.idc
 system/usr/keylayout/gpio-keys.kl
