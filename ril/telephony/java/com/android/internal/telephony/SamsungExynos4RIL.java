@@ -47,6 +47,7 @@ import com.android.internal.telephony.uicc.IccCardStatus;
 public class SamsungExynos4RIL extends RIL implements CommandsInterface {
 
     private AudioManager mAudioManager;
+    private boolean setPreferredNetworkTypeSeen = false;
     private boolean isGSM = false;
     private boolean newril = needsOldRilFeature("newril"); //4.4.4 verson of Samsung RIL
 
@@ -229,6 +230,12 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
         int response = p.readInt();
 
         switch(response) {
+            case RIL_UNSOL_RIL_CONNECTED:
+                if (!setPreferredNetworkTypeSeen) {
+                    Rlog.v(RILJ_LOG_TAG, "SamsungExynos4RIL: connected, setting network type to " + mPreferredNetworkType);
+                    setPreferredNetworkType(mPreferredNetworkType, null);
+                }
+                break;
             // SAMSUNG STATES
             case 11010: // RIL_UNSOL_AM:
                 ret = responseString(p);
@@ -471,5 +478,29 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
 
         super.notifyRegistrantsCdmaInfoRec(infoRec);
     }
+
+    @Override
+    public void getRadioCapability(Message response) {
+        riljLog("getRadioCapability: returning static radio capability");
+        if (response != null) {
+            Object ret = makeStaticRadioCapability();
+            AsyncResult.forMessage(response, ret, null);
+            response.sendToTarget();
+        }
+    }
+
+    @Override
+    public void setPreferredNetworkType(int networkType , Message response) {
+        riljLog("SamsungExynos4RIL: setPreferredNetworkType: " + networkType);
+
+        if (!setPreferredNetworkTypeSeen) {
+            riljLog("SamsungExynos4RIL: Need to reboot modem!");
+            setRadioPower(false, null);
+            setPreferredNetworkTypeSeen = true;
+        }
+
+        super.setPreferredNetworkType(networkType, response);
+    }
+
 }
 
