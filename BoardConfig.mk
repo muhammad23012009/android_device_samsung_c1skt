@@ -180,7 +180,7 @@ BOARD_CHARGER_SHOW_PERCENTAGE := true
 -include vendor/samsung/c1skt/BoardConfigVendor.mk
 
 # Bionic
-MALLOC_IMPL := dlmalloc
+MALLOC_SVELTE := true
 
 # RIL
 BOARD_MODEM_TYPE := xmm6262
