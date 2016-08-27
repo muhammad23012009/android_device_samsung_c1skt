@@ -198,6 +198,7 @@ BOARD_RIL_CLASS := ../../../device/samsung/c1skt/ril
 
 # Recovery
 TARGET_RECOVERY_FSTAB := device/samsung/c1skt/rootdir/fstab.smdk4x12
+TARGET_RECOVERY_DENSITY := mdpi
 TARGET_USERIMAGES_USE_F2FS := true
 RECOVERY_FSTAB_VERSION := 2
 
