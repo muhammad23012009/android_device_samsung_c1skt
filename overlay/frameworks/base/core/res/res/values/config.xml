@@ -261,13 +261,7 @@
 
     <!-- The duration (in milliseconds) of the activity open/close and fragment open/close animations. -->
     <integer name="config_activityShortDur">75</integer>
-<integer name="config_activityDefaultDur">110</integer>
-
-    <!-- The duration (in milliseconds) of recent app screen animation. -->
-    <integer name="config_recentDefaultDur">150</integer>
-
-    <!-- The duration (in milliseconds) of recent app screen exit animation. -->
-<integer name="config_recentExitDur">225</integer>
+    <integer name="config_activityDefaultDur">110</integer>
 
     <!-- Device configuration setting the minfree tunable in the lowmemorykiller in the kernel.
          A high value will cause the lowmemorykiller to fire earlier, keeping more memory
