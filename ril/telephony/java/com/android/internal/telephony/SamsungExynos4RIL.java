@@ -47,6 +47,9 @@ import com.android.internal.telephony.uicc.IccCardStatus;
  */
 public class SamsungExynos4RIL extends RIL implements CommandsInterface {
 
+    //SAMSUNG STATES    
+    static final int RIL_UNSOL_RESPONSE_HANDOVER = 11021;    
+
     private AudioManager mAudioManager;
     private boolean setPreferredNetworkTypeSeen = false;
 
@@ -213,12 +216,6 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
                     e.printStackTrace();
                     Rlog.e(RILJ_LOG_TAG, "am " + amString + " could not be executed.");
                 }
-                break;
-            case 11021: // RIL_UNSOL_RESPONSE_HANDOVER:
-                ret = responseVoid(p);
-                break;
-            case 1036:
-                ret = responseVoid(p);
                 break;
             case 11017: // RIL_UNSOL_WB_AMR_STATE:
                 ret = responseInts(p);
