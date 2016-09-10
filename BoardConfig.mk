@@ -39,6 +39,11 @@ TARGET_KERNEL_SOURCE := kernel/samsung/smdk4412
 TARGET_KERNEL_CONFIG := cyanogenmod_c1skt_defconfig
 BOARD_RIL_CLASS := ../../../device/samsung/c1skt/ril
 
+# Init
+TARGET_INIT_VENDOR_LIB := libinit_c1skt
+TARGET_LIBINIT_C1SKT_DEFINES_FILE := device/samsung/c1skt/init/init_c1skt.cpp
+TARGET_UNIFIED_DEVICE := true
+
 # Recovery
 TARGET_RECOVERY_FSTAB := device/samsung/c1skt/rootdir/fstab.smdk4x12
 TARGET_USERIMAGES_USE_F2FS := true
