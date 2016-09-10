@@ -54,5 +54,8 @@ BOARD_SEPOLICY_DIRS += \
 # assert
 TARGET_OTA_ASSERT_DEVICE := m0,i9300,GT-I9300,c1skt,c1ktt,c1lgt,SHV-E210S,SHV-E210K,SHV-E210L
 
+# AdvancedDisplay
+TARGET_ADVANCEDDISPLAY := true
+
 # inherit from the proprietary version
 -include vendor/samsung/c1skt/BoardConfigVendor.mk
