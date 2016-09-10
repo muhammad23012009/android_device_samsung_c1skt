@@ -27,16 +27,15 @@
    IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
 #include "vendor_init.h"
 #include "property_service.h"
 #include "log.h"
 #include "util.h"
+
+#include "init_c1skt.h"
 
 #define ISMATCH(a, b) (!strncmp((a), (b), PROP_VALUE_MAX))
 
@@ -47,6 +46,10 @@ void init_target_properties()
     char device[PROP_VALUE_MAX];
     char devicename[PROP_VALUE_MAX];
     int rc;
+
+    rc = property_get("ro.board.platform", platform);
+    if (!rc || !ISMATCH(platform, ANDROID_TARGET))
+        return;
 
     property_get("ro.bootloader", bootloader);
 
@@ -73,9 +76,4 @@ void init_target_properties()
     property_get("ro.product.device", device);
     strlcpy(devicename, device, sizeof(devicename));
     INFO("Found bootloader id %s setting build properties for %s device\n", bootloader, devicename);
-}
-
-void vendor_load_properties()
-{
-    init_target_properties();
 }
