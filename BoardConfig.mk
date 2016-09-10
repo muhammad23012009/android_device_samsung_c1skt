@@ -41,7 +41,6 @@ BOARD_RIL_CLASS := ../../../device/samsung/c1skt/ril
 
 # Init
 TARGET_INIT_VENDOR_LIB := libinit_c1skt
-TARGET_LIBINIT_C1SKT_DEFINES_FILE := device/samsung/c1skt/init/init_c1skt.cpp
 TARGET_UNIFIED_DEVICE := true
 
 # Recovery
