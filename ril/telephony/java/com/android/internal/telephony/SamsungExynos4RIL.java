@@ -271,19 +271,6 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
         int response = p.readInt();
 
         switch(response) {
-            case RIL_UNSOL_STK_PROACTIVE_COMMAND:
-                if (RILJ_LOGD) unsljLogRet(response, ret);
-
-                if (mCatProCmdRegistrant != null) {
-                    mCatProCmdRegistrant.notifyRegistrant(
-                            new AsyncResult (null, ret, null));
-                } else {
-                    // The RIL will send a CAT proactive command before the
-                    // registrant is registered. Buffer it to make sure it
-                    // does not get ignored (and breaks CatService).
-                    mCatProCmdBuffer = ret;
-                }
-            break;
             case RIL_UNSOL_RIL_CONNECTED:
                 if (!setPreferredNetworkTypeSeen) {
                     Rlog.v(RILJ_LOG_TAG, "SamsungExynos4RIL: connected, setting network type to " + mPreferredNetworkType);
@@ -316,16 +303,6 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
                 return;
         }
 
-    }
-
-    @Override
-    public void setOnCatProactiveCmd(Handler h, int what, Object obj) {
-        mCatProCmdRegistrant = new Registrant (h, what, obj);
-        if (mCatProCmdBuffer != null) {
-            mCatProCmdRegistrant.notifyRegistrant(
-                                new AsyncResult (null, mCatProCmdBuffer, null));
-            mCatProCmdBuffer = null;
-        }
     }
     
     /**
@@ -371,8 +348,6 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
 
         send(rr);
     }
-
-    static final int RIL_REQUEST_DIAL_EMERGENCY = 10016;
 
     private void
     dialEmergencyCall(String address, int clirMode, Message result) {
