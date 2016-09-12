@@ -33,7 +33,6 @@ const char CameraParameters::EFFECT_POINT_BLUE[] = "point-blue"; \
 const char CameraParameters::EFFECT_VINTAGE_COLD[] = "vintage-cold"; \
 const char CameraParameters::EFFECT_VINTAGE_WARM[] = "vintage-warm"; \
 const char CameraParameters::EFFECT_WASHED[] = "washed"; \
-int CameraParameters::getInt64(const char *key) const { return -1; };
 
 #define CAMERA_PARAMETERS_EXTRA_H \
     int getInt64(const char *key) const; \
