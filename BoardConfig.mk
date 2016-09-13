@@ -13,11 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-# This variable is set first, so it can be overridden
-# by BoardConfigVendor.mk
-
--include device/samsung/c1skt-common/BoardCommonConfig.mk
+include device/samsung/c1skt-common/BoardCommonConfig.mk
 
 # Bionic
 MALLOC_SVELTE := true
@@ -54,6 +50,3 @@ TARGET_OTA_ASSERT_DEVICE := m0,i9300,GT-I9300,c1skt,c1ktt,c1lgt,SHV-E210S,SHV-E2
 
 # AdvancedDisplay
 TARGET_ADVANCEDDISPLAY := true
-
-# inherit from the proprietary version
--include vendor/samsung/c1skt/BoardConfigVendor.mk

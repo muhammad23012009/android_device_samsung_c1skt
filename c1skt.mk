@@ -14,9 +14,6 @@
 # limitations under the License.
 #
 
-# Include common makefile
-$(call inherit-product, device/samsung/c1skt-common/common.mk)
-
 LOCAL_PATH := device/samsung/c1skt
 
 # Overlay
