@@ -17,7 +17,7 @@
 # This variable is set first, so it can be overridden
 # by BoardConfigVendor.mk
 
--include device/samsung/c1skt-common/BoardCommonConfig.mk
+-include device/samsung/c1skt/BoardCommonConfig.mk
 
 # Bionic
 MALLOC_IMPL := dlmalloc

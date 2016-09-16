@@ -56,6 +56,13 @@ done
 
 LOCAL_PATH := vendor/__VENDOR__/__DEVICE__
 
+PRODUCT_PACKAGES += \\
+    libUMP \\
+    libfimc
+
+PRODUCT_COPY_FILES += \\
+    \$(LOCAL_PATH)/proprietary/sbin/cbd:root/sbin/cbd
+
 PRODUCT_COPY_FILES += \\
 EOF
 
@@ -73,6 +80,49 @@ for FILE in `cat proprietary-files.txt | grep -v ^# | grep -v ^$`; do
     fi
     echo "    \$(LOCAL_PATH)/proprietary/$DEST:$FILE$LINEEND" >> ../../../vendor/$VENDOR/$DEVICE/$DEVICE-vendor-blobs.mk
 done
+
+(cat << EOF) | sed s/__DEVICE__/$DEVICE/g | sed s/__VENDOR__/$VENDOR/g > ../../../vendor/$VENDOR/$DEVICE/Android.mk
+# Copyright (C) 2012 The CyanogenMod Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+LOCAL_PATH := \$(call my-dir)
+
+ifneq (\$(filter c1skt c1ktt c1lgt i9300 i9305 n7100 n8000 n8013 t0lte t0lteatt t0ltetmo i605 l900 r950,\$(TARGET_DEVICE)),)
+
+include \$(CLEAR_VARS)
+LOCAL_MODULE := libTVOut
+LOCAL_MODULE_OWNER := samsung
+LOCAL_SRC_FILES := system/lib/libTVOut.so
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_SUFFIX := .so
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_PATH := \$(TARGET_OUT)/lib
+include \$(BUILD_PREBUILT)
+
+include \$(CLEAR_VARS)
+LOCAL_MODULE := libfimc
+LOCAL_MODULE_OWNER := samsung
+LOCAL_SRC_FILES := system/lib/libfimc.so
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_SUFFIX := .so
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_PATH := \$(TARGET_OUT)/lib
+include \$(BUILD_PREBUILT)
+
+endif
+
+EOF
 
 (cat << EOF) | sed s/__DEVICE__/$DEVICE/g | sed s/__VENDOR__/$VENDOR/g > ../../../vendor/$VENDOR/$DEVICE/$DEVICE-vendor.mk
 # Copyright (C) 2016 The CyanogenMod Project
@@ -110,6 +160,8 @@ EOF
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+USE_CAMERA_STUB := false
+BOARD_USES_GENERIC_AUDIO := false
+
 EOF
 
-./../../../device/samsung/c1skt-common/extract-files.sh
