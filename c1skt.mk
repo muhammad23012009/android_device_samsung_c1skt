@@ -221,7 +221,7 @@ PRODUCT_PACKAGES += \
 
 # RIL
 PRODUCT_PACKAGES += \
-	libsamsung_symbols
+	libshim_ril
 
 # NFC
 PRODUCT_PACKAGES += \
