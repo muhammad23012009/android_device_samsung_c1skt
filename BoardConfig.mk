@@ -179,6 +179,9 @@ BOARD_CHARGER_SHOW_PERCENTAGE := true
 # inherit from the proprietary version
 -include vendor/samsung/c1skt/BoardConfigVendor.mk
 
+# Wifi
+WIFI_DRIVER_MODULE_PATH :=
+
 # Bionic
 MALLOC_SVELTE := true
 LIBART_IMG_BASE := 0x30000000
