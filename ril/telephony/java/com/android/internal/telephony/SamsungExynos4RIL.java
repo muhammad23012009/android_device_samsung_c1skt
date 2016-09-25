@@ -131,7 +131,6 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
     /* private Message mPendingGetSimStatus; */
 
     private AudioManager mAudioManager;
-    private boolean setPreferredNetworkTypeSeen = false;
 
     public SamsungExynos4RIL(Context context, int networkMode, int cdmaSubscription, Integer instanceId) {
         super(context, networkMode, cdmaSubscription, instanceId);
@@ -295,12 +294,6 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
         }
 
         switch(response) {
-            case RIL_UNSOL_RIL_CONNECTED:
-                if (!setPreferredNetworkTypeSeen) {
-                    Rlog.v(RILJ_LOG_TAG, "SamsungExynos4RIL: connected, setting network type to " + mPreferredNetworkType);
-                    setPreferredNetworkType(mPreferredNetworkType, null);
-                }
-                break;
             case RIL_UNSOL_STK_PROACTIVE_COMMAND:
                 if (RILJ_LOGD) unsljLogRet(response, ret);
                 
@@ -472,19 +465,6 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
             AsyncResult.forMessage(response, ret, null);
             response.sendToTarget();
         }
-    }
-
-    @Override
-    public void setPreferredNetworkType(int networkType , Message response) {
-        riljLog("SamsungExynos4RIL: setPreferredNetworkType: " + networkType);
-
-        if (!setPreferredNetworkTypeSeen) {
-            riljLog("SamsungExynos4RIL: Need to reboot modem!");
-            setRadioPower(false, null);
-            setPreferredNetworkTypeSeen = true;
-        }
-
-        super.setPreferredNetworkType(networkType, response);
     }
 
 }
