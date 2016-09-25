@@ -174,7 +174,7 @@ BOARD_HAL_STATIC_LIBRARIES := libhealthd.exynos4
 BOARD_CHARGER_SHOW_PERCENTAGE := true
 
 # inherit from the proprietary version
--include vendor/samsung/c1skt-common/BoardConfigVendor.mk
+-include vendor/samsung/c1skt/BoardConfigVendor.mk
 
 # Bionic
 MALLOC_IMPL := dlmalloc
