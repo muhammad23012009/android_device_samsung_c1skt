@@ -26,12 +26,42 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 $(call inherit-product, device/common/gps/gps_us_supl.mk)
 
 # Init files
+# SMDK4X12
 PRODUCT_COPY_FILES := \
+    $(LOCAL_PATH)/rootdir/fstab.smdk4x12:root/fstab.smdk4x12 \
     $(LOCAL_PATH)/rootdir/init.smdk4x12.rc:root/init.smdk4x12.rc \
     $(LOCAL_PATH)/rootdir/init.smdk4x12.usb.rc:root/init.smdk4x12.usb.rc \
-    $(LOCAL_PATH)/rootdir/init.trace.rc:root/init.trace.rc \
     $(LOCAL_PATH)/rootdir/ueventd.smdk4x12.rc:root/ueventd.smdk4x12.rc \
     $(LOCAL_PATH)/rootdir/ueventd.smdk4x12.rc:recovery/root/ueventd.smdk4x12.rc
+
+# C1SKT
+PRODUCT_COPY_FILES := \
+    $(LOCAL_PATH)/rootdir/c1skt/fstab.SHV-E210S:root/fstab.SHV-E210S \
+    $(LOCAL_PATH)/rootdir/c1skt/init.SHV-E210S.rc:root/init.SHV-E210S.rc \
+    $(LOCAL_PATH)/rootdir/c1skt/init.SHV-E210S.usb.rc:root/init.SHV-E210S.usb.rc \
+    $(LOCAL_PATH)/rootdir/c1skt/ueventd.SHV-E210S.rc:root/ueventd.SHV-E210S.rc \
+    $(LOCAL_PATH)/rootdir/c1skt/ueventd.SHV-E210S.rc:recovery/root/ueventd.SHV-E210S.rc
+
+# C1KTT
+PRODUCT_COPY_FILES := \
+    $(LOCAL_PATH)/rootdir/c1ktt/fstab.SHV-E210K:root/fstab.SHV-E210K \
+    $(LOCAL_PATH)/rootdir/c1ktt/init.SHV-E210K.rc:root/init.SHV-E210K.rc \
+    $(LOCAL_PATH)/rootdir/c1ktt/init.SHV-E210K.usb.rc:root/init.SHV-E210K.usb.rc \
+    $(LOCAL_PATH)/rootdir/c1ktt/ueventd.SHV-E210K.rc:root/ueventd.SHV-E210K.rc \
+    $(LOCAL_PATH)/rootdir/c1ktt/ueventd.SHV-E210K.rc:recovery/root/ueventd.SHV-E210K.rc
+
+# C1LGT
+PRODUCT_COPY_FILES := \
+    $(LOCAL_PATH)/rootdir/c1lgt/fstab.SHV-E210L:root/fstab.SHV-E210L \
+    $(LOCAL_PATH)/rootdir/c1lgt/init.SHV-E210L.rc:root/init.SHV-E210L.rc \
+    $(LOCAL_PATH)/rootdir/c1lgt/init.SHV-E210L.usb.rc:root/init.SHV-E210L.usb.rc \
+    $(LOCAL_PATH)/rootdir/c1lgt/ueventd.SHV-E210L.rc:root/ueventd.SHV-E210L.rc \
+    $(LOCAL_PATH)/rootdir/c1lgt/ueventd.SHV-E210L.rc:recovery/root/ueventd.SHV-E210L.rc
+
+# COMMON
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/init.trace.rc:root/init.trace.rc \
+    $(LOCAL_PATH)/rootdir/init.target.rc:root/init.target.rc
 
 # Audio
 PRODUCT_COPY_FILES += \
@@ -189,11 +219,6 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 # Screen density
 PRODUCT_AAPT_CONFIG := normal
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
-
-# Init files
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/fstab.smdk4x12:root/fstab.smdk4x12 \
-    $(LOCAL_PATH)/rootdir/init.target.rc:root/init.target.rc
 
 # Audio
 PRODUCT_COPY_FILES += \
