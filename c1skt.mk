@@ -263,5 +263,4 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml
 
 # Include non-opensource parts
-$(call inherit-product-if-exists, vendor/samsung/c1skt/c1skt-vendor.mk)
-$(call inherit-product, vendor/samsung/c1skt-common/common-vendor.mk)
+$(call inherit-product, vendor/samsung/c1skt/c1skt-vendor.mk)
