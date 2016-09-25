@@ -279,6 +279,7 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
         int response = p.readInt();
         
         try{switch(response) {
+            case RIL_UNSOL_STK_PROACTIVE_COMMAND: ret = responseString(p); break;
             case RIL_UNSOL_STK_SEND_SMS_RESULT: ret = responseInts(p); break; // Samsung STK
             default:
                 // Rewind the Parcel
@@ -300,6 +301,19 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
                     setPreferredNetworkType(mPreferredNetworkType, null);
                 }
                 break;
+            case RIL_UNSOL_STK_PROACTIVE_COMMAND:
+                if (RILJ_LOGD) unsljLogRet(response, ret);
+                
+                if (mCatProCmdRegistrant != null) {
+                    mCatProCmdRegistrant.notifyRegistrant(
+                                                          new AsyncResult (null, ret, null));
+                } else {
+                    // The RIL will send a CAT proactive command before the
+                    // registrant is registered. Buffer it to make sure it
+                    // does not get ignored (and breaks CatService).
+                    mCatProCmdBuffer = ret;
+                }
+                break;                
             case RIL_UNSOL_STK_SEND_SMS_RESULT:
                 if (RILJ_LOGD) unsljLogRet(response, ret);
                 
