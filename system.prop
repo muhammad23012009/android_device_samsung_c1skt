@@ -15,3 +15,5 @@ ro.ril.telephony.mqanelements=6
 # Battery
 pm.sleep_mode=1
 ro.ril.disable.power.collapse=0
+
+media.stagefright.legacyencoder=true
