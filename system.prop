@@ -20,3 +20,29 @@ persist.radio.add_power_save=1
 
 # System property for SIM
 persist.radio.apm_sim_not_pwdn=0
+
+# Battery
+pm.sleep_mode=1
+ro.ril.disable.power.collapse=0
+
+# Gpu
+debug.overlayui.enable=0​
+
+# HW Render
+debug.sf.hw=1
+
+# Scroll
+ro.HorizontalVVM=true
+ro.HorizontalBUA=true
+ro.min_pointer_dur=10
+
+# Touch
+debug.performance.tuning=1
+video.accelerate.hw=1
+
+# Auto optimization
+debug.kill_allocating_task=0
+persist.sys.purgeable_assets=1
+​
+# Browser
+browser.tioptimization=true
