@@ -289,4 +289,6 @@
      -->
     <bool name="config_enableWifiDisplay">true</bool>
 
+    <!-- Enable blur support -->
+    <bool name="config_ui_blur_enabled">true</bool>
 </resources>
