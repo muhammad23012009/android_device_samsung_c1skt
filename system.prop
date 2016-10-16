@@ -20,8 +20,3 @@ persist.radio.add_power_save=1
 
 # System property for SIM
 persist.radio.apm_sim_not_pwdn=0
-
-# Source information
-ro.fullgreen.device=20160727
-ro.fullgreen.kernel=20160725
-ro.fullgreen.wifi=20160803
