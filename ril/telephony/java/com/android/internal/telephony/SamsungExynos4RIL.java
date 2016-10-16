@@ -229,10 +229,23 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
 
     @Override
     protected void
-    processUnsolicited (Parcel p) {
+    processUnsolicited (Parcel p, int type) {
         Object ret;
         int dataPosition = p.dataPosition(); // save off position within the Parcel
         int response = p.readInt();
+
+        // Follow new symantics of sending an Ack starting from RIL version 13
+        if (getRilVersion() >= 13 && type == RESPONSE_UNSOLICITED_ACK_EXP) {
+            Message msg;
+            RILRequest rr = RILRequest.obtain(RIL_RESPONSE_ACKNOWLEDGEMENT, null);
+            msg = mSender.obtainMessage(EVENT_SEND_ACK, rr);
+            acquireWakeLock(rr, FOR_ACK_WAKELOCK);
+            msg.sendToTarget();
+            if (RILJ_LOGD) {
+                riljLog("Unsol response received for " + responseToString(response) +
+                        " Sending ack to ril.cpp");
+            }
+        }
         
         try{switch(response) {
             case RIL_UNSOL_STK_PROACTIVE_COMMAND: ret = responseString(p); break;
@@ -242,7 +255,7 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
                 p.setDataPosition(dataPosition);
                 
                 // Forward responses that we are not overriding to the super class
-                super.processUnsolicited(p);
+                super.processUnsolicited(p, type);
                 return;
         }} catch (Throwable tr) {
             Rlog.e(RILJ_LOG_TAG, "Exception processing unsol response: " + response +
