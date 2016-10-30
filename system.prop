@@ -10,3 +10,7 @@ ro.lcd_min_brightness=20
 ro.telephony.default_network=9
 telephony.lteOnGsmDevice=1
 ro.ril.telephony.mqanelements=6
+
+# Battery
+pm.sleep_mode=1
+ro.ril.disable.power.collapse=0
