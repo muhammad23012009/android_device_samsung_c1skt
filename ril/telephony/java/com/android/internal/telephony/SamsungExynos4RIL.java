@@ -40,6 +40,7 @@ import com.android.internal.telephony.cdma.CdmaInformationRecords.CdmaSignalInfo
 import com.android.internal.telephony.cdma.SignalToneUtil;
 import com.android.internal.telephony.uicc.IccCardApplicationStatus;
 import com.android.internal.telephony.uicc.IccCardStatus;
+import com.android.internal.telephony.uicc.IccUtils;
 
 public class SamsungExynos4RIL extends RIL implements CommandsInterface {
 
@@ -229,7 +230,7 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
 
     @Override
     protected void
-    processUnsolicited (Parcel p) {
+    processUnsolicited (Parcel p, int type) {
         Object ret;
         int dataPosition = p.dataPosition(); // save off position within the Parcel
         int response = p.readInt();
@@ -242,7 +243,7 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
                 p.setDataPosition(dataPosition);
                 
                 // Forward responses that we are not overriding to the super class
-                super.processUnsolicited(p);
+                super.processUnsolicited(p, type);
                 return;
         }} catch (Throwable tr) {
             Rlog.e(RILJ_LOG_TAG, "Exception processing unsol response: " + response +
@@ -294,7 +295,7 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
                 p.setDataPosition(dataPosition);
 
                 // Forward responses that we are not overriding to the super class
-                super.processUnsolicited(p);
+                super.processUnsolicited(p, type);
                 return;
         }
 
@@ -384,4 +385,3 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
     }
 
 }
-
