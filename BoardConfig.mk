@@ -150,7 +150,7 @@ BOARD_HAVE_SAMSUNG_WIFI          := true
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
 BOARD_HAVE_SAMSUNG_BLUETOOTH := true
-BOARD_BLUEDROID_VENDOR_CONF := device/samsung/i9300/bluetooth/vnd_smdk4x12.txt
+BOARD_BLUEDROID_VENDOR_CONF := device/samsung/c1skt/bluetooth/vnd_smdk4x12.txt
 
 # Vold
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/s3c-usbgadget/gadget/lun%d/file"
@@ -176,20 +176,20 @@ BACKLIGHT_PATH := /sys/class/backlight/panel/brightness
 BOARD_HAL_STATIC_LIBRARIES := libhealthd.exynos4
 
 # SELinux
-BOARD_SEPOLICY_DIRS += device/samsung/i9300/sepolicy
+BOARD_SEPOLICY_DIRS += device/samsung/c1skt/sepolicy
 
 # Assert
-TARGET_OTA_ASSERT_DEVICE := m0,i9300,GT-I9300
+TARGET_OTA_ASSERT_DEVICE := m0,i9300,GT-I9300,c1skt,c1ktt,c1lgt,SHV-E210S,SHV-E210K,SHV-E210L
 
 # Bluetooth
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/i9300/bluetooth
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/c1skt/bluetooth
 
 # Kernel
 TARGET_KERNEL_SOURCE := kernel/samsung/smdk4412
-TARGET_KERNEL_CONFIG := custom_i9300_defconfig
+TARGET_KERNEL_CONFIG := cyanogenmod_c1skt_defconfig
 
 # Recovery
-TARGET_RECOVERY_FSTAB := device/samsung/i9300/rootdir/fstab.smdk4x12
+TARGET_RECOVERY_FSTAB := device/samsung/c1skt/rootdir/fstab.smdk4x12
 RECOVERY_FSTAB_VERSION := 2
 
 # RIL
@@ -200,10 +200,10 @@ BOARD_RIL_CLASS := ../../../hardware/samsung/ril
 COMMON_GLOBAL_CFLAGS += -DDISABLE_ASHMEM_TRACKING
 
 # own headers
-TARGET_SPECIFIC_HEADER_PATH := device/samsung/i9300/include
+TARGET_SPECIFIC_HEADER_PATH := device/samsung/c1skt/include
 
 # SELinux
-BOARD_SEPOLICY_DIRS += device/samsung/i9300/sepolicy
+BOARD_SEPOLICY_DIRS += device/samsung/c1skt/sepolicy
 
 # inherit from the proprietary version
--include vendor/samsung/i9300/BoardConfigVendor.mk
+-include vendor/samsung/c1skt/BoardConfigVendor.mk

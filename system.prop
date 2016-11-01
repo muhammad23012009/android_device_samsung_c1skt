@@ -1,5 +1,5 @@
 #
-# system.prop for smdk4x12
+# system.prop for c1skt
 #
 
 rild.libpath=/system/lib/libsec-ril.so

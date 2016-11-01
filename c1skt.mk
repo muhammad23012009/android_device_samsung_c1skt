@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-LOCAL_PATH := device/samsung/i9300
+LOCAL_PATH := device/samsung/c1skt
 
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
@@ -41,7 +41,7 @@ PRODUCT_COPY_FILES += \
 
 # Audio
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/tiny_hw.xml:system/etc/sound/m0
+    $(LOCAL_PATH)/configs/tiny_hw.xml:system/etc/sound/c1skt
     $(LOCAL_PATH)/configs/audio_effects.conf:system/etc/audio_effects.conf \
     $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf
 
@@ -229,4 +229,4 @@ PRODUCT_PROPERTY_OVERRIDES += \
     TARGET_OMX_PATH := hardware/samsung/exynos/multimedia/openmax
     $(call inherit-product, hardware/samsung/exynos4x12.mk)
 
-$(call inherit-product-if-exists, vendor/samsung/i9300/i9300-vendor.mk)
+$(call inherit-product-if-exists, vendor/samsung/c1skt/c1skt-vendor.mk)

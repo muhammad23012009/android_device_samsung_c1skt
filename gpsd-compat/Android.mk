@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ifneq ($(filter i9300 n7100,$(TARGET_DEVICE)),)
-
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
@@ -24,5 +22,3 @@ LOCAL_MODULE := libgpsd-compat
 LOCAL_MODULE_TAGS := optional
 
 include $(BUILD_SHARED_LIBRARY)
-
-endif
