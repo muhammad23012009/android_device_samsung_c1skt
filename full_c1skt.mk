@@ -31,9 +31,6 @@ TARGET_SCREEN_WIDTH := 720
 # Inherit from those products. Most specific first.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
-# Inherit from our custom product configuration
-$(call inherit-product, vendor/nameless/config/common.mk)
-
 # Inherit from hardware-specific part of the product configuration
 $(call inherit-product, device/samsung/c1skt/c1skt.mk)
 
@@ -41,7 +38,7 @@ $(call inherit-product, device/samsung/c1skt/c1skt.mk)
 $(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
 
 # Discard inherited values and use our own instead.
-PRODUCT_NAME := nameless_c1skt
+PRODUCT_NAME := full_c1skt
 PRODUCT_DEVICE := c1skt
 PRODUCT_BRAND := samsung
 PRODUCT_MANUFACTURER := samsung
