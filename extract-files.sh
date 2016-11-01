@@ -52,6 +52,9 @@ done
 LOCAL_PATH := vendor/__VENDOR__/__DEVICE__
 
 PRODUCT_COPY_FILES += \\
+\$(LOCAL_PATH)/proprietary/sbin/cbd:root/sbin/cbd
+
+PRODUCT_COPY_FILES += \\
 EOF
 
 LINEEND=" \\"
@@ -100,6 +103,7 @@ EOF
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-EOF
+USE_CAMERA_STUB := false
+BOARD_USES_GENERIC_AUDIO := false
 
-./../../../device/samsung/smdk4412-common/extract-files.sh
+EOF
