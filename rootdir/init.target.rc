@@ -1,5 +1,5 @@
 on init
-    export LD_SHIM_LIBS /system/lib/libsec-ril.so|libril_shim.so:/system/bin/gpsd|libgpsd-compat.so
+    export LD_SHIM_LIBS /system/lib/libril.so|libril_shim.so:/system/bin/gpsd|libgpsd-compat.so
 
 on post-fs
     setprop ro.config.zram true
