@@ -196,7 +196,7 @@ RECOVERY_FSTAB_VERSION := 2
 BOARD_PROVIDES_LIBRIL := true
 BOARD_PROVIDES_RILD := true
 BOARD_MODEM_TYPE := xmm6262
-BOARD_RIL_CLASS := ../../../hardware/samsung/ril
+BOARD_RIL_CLASS := ../../../device/samsung/c1skt/ril
 COMMON_GLOBAL_CFLAGS += -DDISABLE_ASHMEM_TRACKING
 
 # own headers
