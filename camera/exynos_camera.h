@@ -31,7 +31,7 @@
 #include <jpeg_hal.h>
 #endif
 #include <Exif.h>
-#include <MetadataBufferType.h>
+#include "MetadataBufferType.h"
 
 #ifdef __cplusplus
 using namespace android;
@@ -428,6 +428,9 @@ struct exynos_camera {
 };
 
 struct exynos_camera_addrs {
+    unsigned int y;
+    unsigned int cbcr;
+    unsigned int index;
 	MetadataBufferType type;
 	native_handle_t *pHandle;
 };
