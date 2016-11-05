@@ -556,5 +556,5 @@
     <integer name="config_multiuserMaximumUsers">4</integer>
 
     <!-- Enable blur support -->
-    <bool name="config_ui_blur_enabled">true</bool>
+    <!-- <bool name="config_ui_blur_enabled">true</bool> -->
 </resources>
