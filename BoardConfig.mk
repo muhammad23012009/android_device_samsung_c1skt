@@ -43,6 +43,7 @@ TARGET_KERNEL_CONFIG := lineageos_c1skt_defconfig
 # Cache
 BOARD_CACHEIMAGE_PARTITION_SIZE := 1048576
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := f2fs
+BOARD_KERNEL_CMDLINE := androidboot.selinux=permissive
 
 # Recovery
 TARGET_RECOVERY_FSTAB := device/samsung/c1skt/rootdir/fstab.smdk4x12
