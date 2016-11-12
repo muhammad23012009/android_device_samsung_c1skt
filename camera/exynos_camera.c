@@ -37,7 +37,7 @@
 #include <utils/Log.h>
 #include <utils/Timers.h>
 
-#include "MetadataBufferType.h"
+#include <MetadataBufferType.h>
 
 #include "exynos_camera.h"
 
