@@ -234,22 +234,6 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
         Object ret;
         int dataPosition = p.dataPosition(); // save off position within the Parcel
         int response = p.readInt();
-        
-        try{switch(response) {
-            case RIL_UNSOL_STK_PROACTIVE_COMMAND: ret = responseString(p); break;
-            case RIL_UNSOL_STK_SEND_SMS_RESULT: ret = responseInts(p); break; // Samsung STK
-            default:
-                // Rewind the Parcel
-                p.setDataPosition(dataPosition);
-                
-                // Forward responses that we are not overriding to the super class
-                super.processUnsolicited(p, type);
-                return;
-        }} catch (Throwable tr) {
-            Rlog.e(RILJ_LOG_TAG, "Exception processing unsol response: " + response +
-                   " Exception: " + tr.toString());
-            return;
-        }
 
         switch(response) {
             case RIL_UNSOL_STK_PROACTIVE_COMMAND:
