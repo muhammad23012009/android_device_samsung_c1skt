@@ -17,11 +17,6 @@ ro.device.rear_cam=8 MP
 ro.device.front_cam=1.9 MP
 ro.device.screen_res=720x1280
 
-# Ril
-ro.telephony.default_network=9
-telephony.lteOnGsmDevice=1
-ro.ril.telephony.mqanelements=6
-
 # Battery
 pm.sleep_mode=1
 ro.ril.disable.power.collapse=0
