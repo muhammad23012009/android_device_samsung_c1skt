@@ -379,7 +379,7 @@
          don't support RIL_REQUEST_GET_RADIO_CAPABILITY
          format is UMTS|LTE|...
     -->
-    <string translatable="false" name="config_radio_access_family">GPRS|EDGE|WCDMA|LTE</string>
+    <string translatable="false" name="config_radio_access_family">GSM|WCDMA|LTE</string>
 
     <!-- Set this to true to enable the platform's auto-power-save modes like doze and
          app standby.  These are not enabled by default because they require a standard
