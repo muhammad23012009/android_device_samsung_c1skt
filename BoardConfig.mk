@@ -33,6 +33,10 @@ BOARD_RIL_CLASS := ../../../device/samsung/c1skt/ril
 # Graphics
 TARGET_REQUIRES_SYNCHRONOUS_SETSURFACE := true
 
+# Legacy Hal1
+TARGET_HAS_LEGACY_CAMERA_HAL1 := true
+BOARD_GLOBAL_CFLAGS += -DTARGET_HAS_LEGACY_CAMERA_HAL1
+
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/c1skt/bluetooth
 
