@@ -490,23 +490,6 @@ typedef struct {
                                    May be empty in which case the addresses represent point
                                    to point connections. */
 } RIL_Data_Call_Response_v6;
-    
-typedef struct {
-    RIL_RadioTechnologyFamily tech;
-    unsigned char             retry;       /* 0 == not retry, nonzero == retry */
-    int                       messageRef;  /* Valid field if retry is set to nonzero.
-                                            Contains messageRef from RIL_SMS_Response
-                                            corresponding to failed MO SMS.
-                                            */
-        
-    union {
-        /* Valid field if tech is RADIO_TECH_3GPP2. See RIL_REQUEST_CDMA_SEND_SMS */
-        RIL_CDMA_SMS_Message* cdmaMessage;
-            
-        /* Valid field if tech is RADIO_TECH_3GPP. See RIL_REQUEST_SEND_SMS */
-        char**                gsmMessage;
-    } message;
-} RIL_IMS_SMS_Message;
 
 typedef struct {
     int             status;     /* A RIL_DataCallFailCause, 0 which is PDP_FAIL_NONE if no error */
