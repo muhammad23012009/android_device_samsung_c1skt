@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006 The Android Open Source Project
+ * Copyright (C) 2006,2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,6 +80,15 @@ extern "C" {
 #define MAX_DEBUG_SOCKET_NAME_LENGTH 12
 #define MAX_QEMU_PIPE_NAME_LENGTH  11
 #define MAX_UUID_LENGTH 64
+
+///////
+// [NAM] Temp code - 2012.01.13. may be global feature issue.
+#define GLOBALCONFIG_RIL_VT_SUPPORT 1
+#undef GLOBALCONFIG_RIL_SAMSUNG_LIBRIL_INTF_EXTENSION
+#define GLOBALCONFIG_RIL_SAMSUNG_LIBRIL_INTF_EXTENSION 1
+///////
+
+#define RIL_RESET "RIL_RESET"
 
 
 typedef void * RIL_Token;
@@ -396,13 +405,46 @@ typedef struct {
     char            als;        /* ALS line indicator if available
                                    (0 = line 1) */
     char            isVoice;    /* nonzero if this is is a voice call */
+#if defined (GLOBALCONFIG_RIL_VT_SUPPORT)
+    char            isVideo;    /* nonzero if this is is a Video call */
+#endif
     char            isVoicePrivacy;     /* nonzero if CDMA voice privacy mode is active */
     char *          number;     /* Remote party number */
     int             numberPresentation; /* 0=Allowed, 1=Restricted, 2=Not Specified/Unknown 3=Payphone */
+#if defined (GLOBALCONFIG_RIL_CALL_CNAP_KSC5601)
+    int             dcs;        /* coding scheme */
+#endif /* GLOBALCONFIG_RIL_CALL_CNAP_KSC5601 */
     char *          name;       /* Remote party name */
     int             namePresentation; /* 0=Allowed, 1=Restricted, 2=Not Specified/Unknown 3=Payphone */
+    char            isLoopBack; // yblee_loopback
     RIL_UUS_Info *  uusInfo;    /* NULL or Pointer to User-User Signaling Information */
+#if defined (GLOBALCONFIG_RIL_CALL_DUAL_PHONENUMBER)
+    //number plus
+    int             dualNumToa;        /* type of address, eg 145 = intl */
+    char *          dualNum;     /*CDNIP */
+    int             dualNumPresentation; /* 0=Allowed, 1=Restricted, 2=Not Specified/Unknown 3=Payphone */
+#endif /* GLOBALCONFIG_RIL_CALL_DUAL_PHONENUMBER */
+#if defined (GLOBALCONFIG_RIL_CALL_VISUAL_EXPRESSION)
+    int             urldcs;
+    char *          sktVEUrl;       /* Remote party name */
+    int             sktVEUrlPresentation; /* 0=Allowed, 1=Restricted, 2=Not Specified/Unknown 3=Payphone */
+#endif /* GLOBALCONFIG_RIL_CALL_VISUAL_EXPRESSION */
+#if defined (GLOBALCONFIG_RIL_CALL_NEXTI)
+    int             redirectingNumToa;  /* type of address, eg 145 = intl */
+    char *          redirectingNum;     /* redirectedNum */
+    int             redirectingNumPresentation; /* 0=Allowed, 1=Restricted, 2=Not Specified/Unknown 3=Payphone */
+#endif
 } RIL_Call;
+
+typedef struct {
+        int             cid;        /* Context ID */
+        int             active;     /* 0=inactive, 1=active/physical link down, 2=active/physical link up */
+        char *          type;       /* One of the PDP_type values in TS 27.007 section 10.1.1.
+                                       For example, "IP", "IPV6", "IPV4V6", or "PPP". */
+        char *          apn;
+        char *          address;    /* A space-delimited list of addresses, e.g., "192.0.1.3" or
+                                       "192.0.1.11 2001:db8::1". */
+} RIL_Data_Call_Response;
 
 /* Deprecated, use RIL_Data_Call_Response_v6 */
 typedef struct {
@@ -448,6 +490,23 @@ typedef struct {
                                    May be empty in which case the addresses represent point
                                    to point connections. */
 } RIL_Data_Call_Response_v6;
+    
+typedef struct {
+    RIL_RadioTechnologyFamily tech;
+    unsigned char             retry;       /* 0 == not retry, nonzero == retry */
+    int                       messageRef;  /* Valid field if retry is set to nonzero.
+                                            Contains messageRef from RIL_SMS_Response
+                                            corresponding to failed MO SMS.
+                                            */
+        
+    union {
+        /* Valid field if tech is RADIO_TECH_3GPP2. See RIL_REQUEST_CDMA_SEND_SMS */
+        RIL_CDMA_SMS_Message* cdmaMessage;
+            
+        /* Valid field if tech is RADIO_TECH_3GPP. See RIL_REQUEST_SEND_SMS */
+        char**                gsmMessage;
+    } message;
+} RIL_IMS_SMS_Message;
 
 typedef struct {
     int             status;     /* A RIL_DataCallFailCause, 0 which is PDP_FAIL_NONE if no error */
@@ -548,6 +607,12 @@ typedef struct {
     int errorCode;    /* See 3GPP 27.005, 3.2.5 for GSM/UMTS,
                          3GPP2 N.S0005 (IS-41C) Table 171 for CDMA,
                          -1 if unknown or not applicable*/
+    
+#if defined (GLOBALCONFIG_RIL_SMS_ERROR_CLASS_RETRY)
+    int errorClass;      /* - 0x02 -- ERROR_CLASS_TEMPORARY \n
+                          - 0x03 -- ERROR_CLASS_PERMANENT */
+#endif
+    
 } RIL_SMS_Response;
 
 /** Used by RIL_REQUEST_WRITE_SMS_TO_SIM */
@@ -561,6 +626,9 @@ typedef struct {
                        the TP-layer length is "strlen(pdu)/2". */
     char * smsc;    /* SMSC address in GSM BCD format prefixed by a length byte
                        (as expected by TS 27.005) or NULL for default SMSC */
+#if defined (GLOBALCONFIG_RIL_SAMSUNG_LIBRIL_INTF_EXTENSION)
+    int index;
+#endif
 } RIL_SMS_WriteArgs;
 
 /** Used by RIL_REQUEST_DIAL */
@@ -603,6 +671,21 @@ typedef struct {
     char *pin2;     /* May be NULL*/
     char *aidPtr;   /* AID value, See ETSI 102.221 8.1 and 101.220 4, NULL if no value. */
 } RIL_SIM_IO_v6;
+    
+//FINISHED SISO UPDATION 2nd April
+typedef struct {
+    int command;    /* one of the commands listed for TS 27.007 +CRSM*/
+    int fileid;     /* EF id */
+    char *path;     /* "pathid" from TS 27.007 +CRSM command.
+                    Path is in hex asciii format eg "7f205f70"
+                    Path must always be provided.
+                    */
+    int p1;
+    int p2;
+    int p3;
+    char *data;     /* May be NULL*/
+    char *pin2;     /* May be NULL*/
+} RIL_SIM_IO;
 
 /* Used by RIL_REQUEST_SIM_TRANSMIT_APDU_CHANNEL and
  * RIL_REQUEST_SIM_TRANSMIT_APDU_BASIC. */
@@ -626,6 +709,28 @@ typedef struct {
     char *simResponse;  /* In hex string format ([a-fA-F0-9]*), except for SIM_AUTHENTICATION
                            response for which it is in Base64 format, see 3GPP TS 31.102 7.1.2 */
 } RIL_SIM_IO_Response;
+
+// IMS_AKA_AUTHENTICATION_STEALTHV
+typedef struct {
+    int command;    /* one of the commands listed for TS 27.007 +CRSM*/
+    char *data;     /* May be NULL*/
+        
+} RIL_SIM_AUTH;
+    
+typedef struct {  // --> FIX me!!, Use RIL_SIM_IO_v6, instead of RIL_SIM_IO_Response
+    int sw1;
+    int sw2;
+    char *simResponse;  /* In hex string format ([a-fA-F0-9]*). */
+} RIL_SIM_AUTH_Response;
+// IMS_AKA_AUTHENTICATION_STEALTHV
+    
+#if defined (GLOBALCONFIG_RIL_VT_SUPPORT)
+/** Used by RIL_REQUEST_DIAL_VIDEO_CALL */
+typedef struct {
+    char * address;
+    int clir;
+} RIL_Video_Dial;
+#endif
 
 /* See also com.android.internal.telephony.gsm.CallForwardInfo */
 
@@ -752,12 +857,10 @@ typedef enum {
     CALL_FAIL_CDMA_RETRY_ORDER = 1005,
     CALL_FAIL_CDMA_ACCESS_FAILURE = 1006,
     CALL_FAIL_CDMA_PREEMPTED = 1007,
-    CALL_FAIL_CDMA_NOT_EMERGENCY = 1008, /* For non-emergency number dialed
-                                            during emergency callback mode */
-    CALL_FAIL_CDMA_ACCESS_BLOCKED = 1009, /* CDMA network access probes blocked */
-    CALL_FAIL_ERROR_UNSPECIFIED = 0xffff /* This error will be deprecated soon,
-                                            vendor code should make sure to map error
-                                            code to specific error */
+    CALL_FAIL_CDMA_NOT_EMERGENCY = 1008,                /* For non-emergency number dialed during emergency callback mode */
+    CALL_FAIL_CDMA_ACCESS_BLOCKED = 1009,               /* CDMA network access probes blocked */
+    CALL_FAIL_CARD_POLLING_ERROR = 1011, /* Card(SIM/RUIM) polling error */ ///2010.10.12 bongwoon.id W0100107999     //alicia20_EJ07
+    CALL_FAIL_ERROR_UNSPECIFIED = 0xffff
 } RIL_LastCallFailCause;
 
 typedef struct {
@@ -860,7 +963,7 @@ typedef enum {
     PDP_FAIL_TETHERED_CALL_ACTIVE = -6,   /* data call was disconnected by modem because tethered
                                              mode was up on same APN/data profile - no retry until
                                              tethered call is off */
-
+    PDP_FAIL_PARTIAL_RETRY_FAIL = -7,	  /* partial retry failed (no new address acquired) */
     PDP_FAIL_ERROR_UNSPECIFIED = 0xffff,  /* retry silently. Will be deprecated soon as
                                              new error codes are added making this unnecessary */
 } RIL_DataCallFailCause;
@@ -890,6 +993,18 @@ typedef struct {
     char *  number;             /* "number" from 27.007 7.17
                                    (MT only, may be NULL). */
 } RIL_SuppSvcNotification;
+
+    
+#define RIL_SIM_ABSENT                  0
+#define RIL_SIM_NOT_READY               1
+    /* RIL_SIM_READY means that the radio state is RADIO_STATE_SIM_READY.
+     * This is more
+     * than "+CPIN: READY". It also means the radio is ready for SIM I/O
+     */
+#define RIL_SIM_READY                   2
+#define RIL_SIM_PIN                     3
+#define RIL_SIM_PUK                     4
+#define RIL_SIM_NETWORK_PERSONALIZATION 5
 
 #define RIL_CARD_MAX_APPS     8
 
@@ -928,8 +1043,15 @@ typedef enum {
     RIL_PERSOSUBSTATE_RUIM_SERVICE_PROVIDER_PUK = 23,
     RIL_PERSOSUBSTATE_RUIM_RUIM_PUK             = 24
 } RIL_PersoSubstate;
+    
+typedef struct {
+    RIL_PersoSubstate depersonalizationType;
+    char             *depersonalizationCode;
+} RIL_Depersonalization;
+
 
 typedef enum {
+    RIL_APPSTATE_ILLEGAL               = -1,
     RIL_APPSTATE_UNKNOWN               = 0,
     RIL_APPSTATE_DETECTED              = 1,
     RIL_APPSTATE_PIN                   = 2, /* If PIN1 or UPin is required */
@@ -969,14 +1091,25 @@ typedef struct
   int              pin1_replaced;   /* applicable to USIM, CSIM & ISIM */
   RIL_PinState     pin1;
   RIL_PinState     pin2;
-  int              foo1;            /* Samsung */
-  int              foo2;            /* Samsung */
-  int              foo3;            /* Samsung */
-  int              foo4;            /* Samsung */
-  int              foo5;            /* Samsung */
+#if defined (GLOBALCONFIG_RIL_SAMSUNG_LIBRIL_INTF_EXTENSION)
+  int   pin1_num_retries;
+  int   puk1_num_retries;
+  int   pin2_num_retries;
+  int   puk2_num_retries;
+  int   perso_unblock_retries;
+#endif
 } RIL_AppStatus;
 
-/* Deprecated, use RIL_CardStatus_v6 */
+typedef struct
+{
+    RIL_CardState card_state;
+    RIL_PinState  universal_pin_state;             /* applicable to USIM and CSIM: RIL_PINSTATE_xxx */
+    int           gsm_umts_subscription_app_index; /* value < RIL_CARD_MAX_APPS */
+    int           cdma_subscription_app_index;     /* value < RIL_CARD_MAX_APPS */
+    int           num_applications;                /* value <= RIL_CARD_MAX_APPS */
+    RIL_AppStatus applications[RIL_CARD_MAX_APPS];
+} RIL_CardStatus;
+
 typedef struct
 {
   RIL_CardState card_state;
@@ -1008,6 +1141,9 @@ typedef enum {
     SIM_INIT = 1,
     /* SIM reset.  SIM power required, SIM may be locked and all files should be re-read. */
     SIM_RESET = 2
+#if defined (GLOBALCONFIG_RIL_SAMSUNG_LIBRIL_INTF_EXTENSION)
+    ,SIM_RESET_FOR_SAP = 3
+#endif
 } RIL_SimRefreshResult;
 
 typedef struct {
@@ -1042,6 +1178,13 @@ typedef struct {
                                            3=Network specific, 4=subscriber */
     int             number_plan;        /* 0=Unknown, 1=ISDN, 3=Data, 4=Telex, 8=Nat'l, 9=Private */
 } RIL_CDMA_CallWaiting_v6;
+
+typedef struct {
+    char *          number;             /* Remote party number */
+    int             numberPresentation; /* 0=Allowed, 1=Restricted, 2=Not Specified/Unknown */
+    char *          name;               /* Remote party name */
+    RIL_CDMA_SignalInfoRecord signalInfoRecord;
+} RIL_CDMA_CallWaiting;
 
 /**
  * Which types of Cell Broadcast Message (CBM) are to be received by the ME
@@ -1407,6 +1550,9 @@ typedef enum {
 typedef struct {
   char alpha_len;
   char alpha_buf[CDMA_ALPHA_INFO_BUFFER_LENGTH];
+#ifdef GLOBALCONFIG_RIL_CALL_SHOW_CDMA_RAT
+  char numberPresentation;
+#endif /* GLOBALCONFIG_RIL_CALL_SHOW_CDMA_RAT */
 } RIL_CDMA_DisplayInfoRecord;
 
 /* Called Party Number Info Rec as defined in C.S0005 section 3.7.5.2
@@ -1545,6 +1691,12 @@ typedef struct {
      RIL_HardwareConfig_Sim sim;
   } cfg;
 } RIL_HardwareConfig;
+    
+/* Data Call Profile: Simple IP User Profile Parameters*/
+typedef struct {
+    int  profileId;
+    int  priority;       /* priority. [0..255], 0 - highest */
+} RIL_DataCallProfileInfo;
 
 typedef enum {
   SS_CFU,
@@ -1619,6 +1771,18 @@ typedef struct {
     RIL_CfData cfData;
   };
 } RIL_StkCcUnsolSsResponse;
+
+
+// Preferred Network List function
+typedef struct {
+    int index;
+    char *oper;
+    char *plmn;
+      int gsmAct;
+      int gsmCompactAct;
+      int utranAct;
+    int mode;
+} RIL_PreferredNetworkInfo;
 
 /**
  * Data connection power state
@@ -1850,12 +2014,11 @@ typedef struct {
 #define RIL_REQUEST_CHANGE_SIM_PIN2 7
 
 /**
- * RIL_REQUEST_ENTER_NETWORK_DEPERSONALIZATION
+ * RIL_REQUEST_ENTER_DEPERSONALIZATION_CODE
  *
  * Requests that network personlization be deactivated
  *
- * "data" is const char **
- * ((const char **)(data))[0]] is network depersonlization code
+ * "data" is NULL
  *
  * "response" is int *
  * ((int *)response)[0] is the number of retries remaining, or -1 if unknown
@@ -1869,6 +2032,7 @@ typedef struct {
  *     (code is invalid)
  */
 
+#define RIL_REQUEST_ENTER_DEPERSONALIZATION_CODE 8
 #define RIL_REQUEST_ENTER_NETWORK_DEPERSONALIZATION 8
 
 /**
