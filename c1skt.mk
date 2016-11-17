@@ -112,4 +112,7 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml
 
+# Get the long list of APNs
+PRODUCT_COPY_FILES := device/samsung/c1skt/configs/apns-full-conf.xml:system/etc/apns-conf.xml
+
 $(call inherit-product-if-exists, vendor/samsung/c1skt/c1skt-vendor.mk)
