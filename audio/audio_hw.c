@@ -309,6 +309,31 @@ static int set_route_by_array(struct mixer *mixer, struct route_setting *route,
     return 0;
 }
 
+static int set_route_by_single(struct mixer *mixer, char *ctl_name, int intval)
+{
+    struct mixer_ctl *ctl;
+    unsigned int j, ret;
+
+    /* Go through the route array and set each value */
+    ctl = mixer_get_ctl_by_name(mixer, ctl_name);
+    if (!ctl) {
+        ALOGE("Unknown control '%s'\n", ctl_name);
+        return -EINVAL;
+    }
+
+    /* This ensures multiple (i.e. stereo) values are set jointly */
+    for (j = 0; j < mixer_ctl_get_num_values(ctl); j++) {
+        ret = mixer_ctl_set_value(ctl, j, intval);
+        if (ret != 0) {
+            ALOGE("Failed to set '%s' to '%d'\n", ctl_name, intval);
+        } else {
+            ALOGV("Set '%s' to '%d'\n", ctl_name, intval);
+        }
+    }
+
+    return 0;
+}
+
 /* Must be called with lock */
 void select_devices(struct m0_audio_device *adev)
 {
@@ -525,10 +550,6 @@ static void set_incall_device(struct m0_audio_device *adev)
             device_type = SOUND_AUDIO_PATH_HANDSET;
             break;
     }
-
-    /* if output device isn't supported, open modem side to handset by default */
-    ALOGE("%s: ril_set_call_audio_path(%d)", __func__, device_type);
-    ril_set_call_audio_path(&adev->ril, device_type);
 }
 
 static void force_all_standby(struct m0_audio_device *adev)
@@ -2580,8 +2601,15 @@ static int adev_set_voice_volume(struct audio_hw_device *dev, float volume)
 
     adev->voice_volume = volume;
 
-    if (adev->mode == AUDIO_MODE_IN_CALL)
-        ril_set_call_volume(&adev->ril, SOUND_TYPE_VOICE, volume);
+    if (adev->mode == AUDIO_MODE_IN_CALL) {
+        //ril_set_call_volume(&adev->ril, SOUND_TYPE_VOICE, volume);
+        int vol = volume * 10;
+        ALOGD("SHAUDGET: VoiceVolume %f, CONV: %d", volume, vol);
+        vol -= 10;
+        int relvol = 96 + vol*3;
+        set_route_by_single(adev->mixer, "DAC1 Volume", relvol);
+        ALOGD("SHAUDGET: Setted Voice Volume: %d", relvol);
+    }
 
     return 0;
 }
@@ -2609,8 +2637,20 @@ static int adev_set_mic_mute(struct audio_hw_device *dev, bool state)
 {
     struct m0_audio_device *adev = (struct m0_audio_device *)dev;
 
-    if (adev->mode == AUDIO_MODE_IN_CALL)
-            ril_set_mic_mute(&adev->ril, state);
+    if (adev->mode == AUDIO_MODE_IN_CALL) {
+        //ril_set_mic_mute(&adev->ril, state);
+        if(state) {
+            ALOGD("SHAUDGET: Mic mute Enabled");
+            //set_route_by_single(adev->mixer, "Headset Mic Switch", 0);
+            set_route_by_single(adev->mixer, "Main Mic Switch", 0);
+        } else {
+            ALOGD("SHAUDGET: Mic mute Disabled");
+            //if(adev->out_device == AUDIO_DEVICE_OUT_WIRED_HEADSET)
+            //    set_route_by_single(adev->mixer, "Headset Mic Switch", 1);
+            //else
+                set_route_by_single(adev->mixer, "Main Mic Switch", 1);
+        }
+    }
 
     adev->mic_mute = state;
 
