@@ -38,7 +38,7 @@ BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/c1skt/bluetooth
 
 # Kernel
 TARGET_KERNEL_SOURCE := kernel/samsung/smdk4412
-TARGET_KERNEL_CONFIG := cyanogenmod_c1skt_defconfig
+TARGET_KERNEL_CONFIG := lineageos_c1skt_defconfig
 
 # Cache
 BOARD_CACHEIMAGE_PARTITION_SIZE := 1048576
