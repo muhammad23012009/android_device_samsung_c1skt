@@ -416,6 +416,17 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
         return rr;
     }
 
+    private Object
+    operatorCheck(Parcel p) {
+        String response[] = (String[])responseStrings(p);
+        for(int i=0; i<2; i++){
+            if (response[i]!= null){
+                response[i] = Operators.operatorReplace(response[i]);
+            }
+        }
+        return response;
+    }
+
     @Override
     public void
     dial(String address, int clirMode, UUSInfo uusInfo, Message result) {
@@ -440,6 +451,38 @@ public class SamsungExynos4RIL extends RIL implements CommandsInterface {
         if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
 
         send(rr);
+    }
+
+    //this method is used in the search network functionality.
+    // in mobile network setting-> network operators
+    @Override
+    protected Object
+    responseOperatorInfos(Parcel p) {
+        String strings[] = (String [])responseStrings(p);
+        ArrayList<OperatorInfo> ret;
+
+        if (strings.length % mQANElements != 0) {
+            throw new RuntimeException(
+                                       "RIL_REQUEST_QUERY_AVAILABLE_NETWORKS: invalid response. Got "
+                                       + strings.length + " strings, expected multiple of " + mQANElements);
+        }
+
+        ret = new ArrayList<OperatorInfo>(strings.length / mQANElements);
+        Operators init = null;
+        if (strings.length != 0) {
+            init = new Operators();
+        }
+        for (int i = 0 ; i < strings.length ; i += mQANElements) {
+            String temp = init.unOptimizedOperatorReplace(strings[i+0]);
+            ret.add (
+                     new OperatorInfo(
+                                      temp, //operatorAlphaLong
+                                      temp,//operatorAlphaShort
+                                      strings[i+2],//operatorNumeric
+                                      strings[i+3]));//state
+        }
+
+        return ret;
     }
 
     public void
