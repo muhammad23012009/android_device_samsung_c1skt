@@ -1,34 +1,4 @@
-#define LOG_TAG "secril-shim"
-#define RIL_SHLIB
-
-#include <pthread.h>
-#include <termios.h>
-#include <alloca.h>
-#include <assert.h>
-#include <getopt.h>
-#include <string.h>
-#include <unistd.h>
-#include <dlfcn.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <inttypes.h>
-
-#include <telephony/ril_cdma_sms.h>
-#include <sys/system_properties.h>
-#include <telephony/librilutils.h>
-#include <cutils/sockets.h>
-#include <cutils/compiler.h>
-#include <telephony/ril.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/cdefs.h>
-#include <utils/Log.h>
-#include <sys/stat.h>
-#define REAL_RIL_NAME				"/system/lib/libsec-ril.so"
-
+#include "secril-shim.h"
 
 static RIL_RadioFunctions const *mRealRadioFuncs;
 static const struct RIL_Env *mEnv;
@@ -43,6 +13,59 @@ static void rilOnRequest(int request, void *data, size_t datalen, RIL_Token t)
         default:
             mRealRadioFuncs->onRequest(request, data, datalen, t);
     }
+}
+
+static void fixupDataCallList(void *response, size_t responselen) {
+	RIL_Data_Call_Response_v6 *p_cur = (RIL_Data_Call_Response_v6 *) response;
+	int num = responselen / sizeof(RIL_Data_Call_Response_v6);
+
+	int i;
+	for (i = 0; i < num; ++i)
+		p_cur[i].gateways = p_cur[i].addresses;
+}
+
+static void onRequestCompleteShim(RIL_Token t, RIL_Errno e, void *response, size_t responselen) {
+	int request;
+	RequestInfo *pRI;
+
+	pRI = (RequestInfo *)t;
+
+	/* If pRI is null, this entire function is useless. */
+	if (pRI == NULL)
+		goto null_token_exit;
+
+	request = pRI->pCI->requestNumber;
+
+	switch (request) {
+		case RIL_REQUEST_DATA_CALL_LIST:
+		case RIL_REQUEST_SETUP_DATA_CALL:
+			/* According to the Samsung RIL, the addresses are the gateways?
+			 * This fixes mobile data. */
+			if (response != NULL && responselen != 0 && (responselen % sizeof(RIL_Data_Call_Response_v6) == 0)) {
+				fixupDataCallList(response, responselen);
+				rilEnv->OnRequestComplete(t, e, response, responselen);
+				return;
+			}
+			break;
+	}
+
+	RLOGD("%s: got request %s: forwarded to libril.\n", __func__, requestToString(request));
+null_token_exit:
+	rilEnv->OnRequestComplete(t, e, response, responselen);
+}
+
+static void onUnsolicitedResponseShim(int unsolResponse, const void *data, size_t datalen)
+{
+	switch (unsolResponse) {
+		case RIL_UNSOL_DATA_CALL_LIST_CHANGED:
+			/* According to the Samsung RIL, the addresses are the gateways?
+			 * This fixes mobile data. */
+			if (data != NULL && datalen != 0 && (datalen % sizeof(RIL_Data_Call_Response_v6) == 0))
+				fixupDataCallList((void*) data, datalen);
+			break;
+	}
+
+	rilEnv->OnUnsolicitedResponse(unsolResponse, data, datalen);
 }
 
 static void patchMem(void *libHandle) {
@@ -78,12 +101,18 @@ const RIL_RadioFunctions* RIL_Init(const struct RIL_Env *env, int argc, char **a
 {
 	RIL_RadioFunctions const* (*fRealRilInit)(const struct RIL_Env *env, int argc, char **argv);
 	static RIL_RadioFunctions rilInfo;
+	static struct RIL_Env shimmedEnv;
 	void *realRilLibHandle;
 	int i;
 
 
 	//save the env;
 	mEnv = env;
+	
+	//Shim the RIL_Env passed to the real RIL, saving a copy of the original
+	shimmedEnv = *env;
+	shimmedEnv.OnRequestComplete = onRequestCompleteShim;
+	shimmedEnv.OnUnsolicitedResponse = onUnsolicitedResponseShim;
 
 	//get the real RIL
 	realRilLibHandle = dlopen(REAL_RIL_NAME, RTLD_LOCAL);
@@ -115,7 +144,7 @@ const RIL_RadioFunctions* RIL_Init(const struct RIL_Env *env, int argc, char **a
 	patchMem(realRilLibHandle);
 
 	//try to init the real ril
-	mRealRadioFuncs = fRealRilInit(env, argc, argv);
+	mRealRadioFuncs = fRealRilInit(&shimmedEnv, argc, argv);
 	if (!mRealRadioFuncs) {
 		RLOGE("The real RIL's entry point failed\n");
 		goto out_fail;
