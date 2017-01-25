@@ -43,7 +43,7 @@ static void onRequestCompleteShim(RIL_Token t, RIL_Errno e, void *response, size
 			 * This fixes mobile data. */
 			if (response != NULL && responselen != 0 && (responselen % sizeof(RIL_Data_Call_Response_v6) == 0)) {
 				fixupDataCallList(response, responselen);
-				rilEnv->OnRequestComplete(t, e, response, responselen);
+				mEnv->OnRequestComplete(t, e, response, responselen);
 				return;
 			}
 			break;
@@ -51,7 +51,7 @@ static void onRequestCompleteShim(RIL_Token t, RIL_Errno e, void *response, size
 
 	RLOGD("%s: got request %s: forwarded to libril.\n", __func__, requestToString(request));
 null_token_exit:
-	rilEnv->OnRequestComplete(t, e, response, responselen);
+	mEnv->OnRequestComplete(t, e, response, responselen);
 }
 
 static void onUnsolicitedResponseShim(int unsolResponse, const void *data, size_t datalen)
@@ -65,7 +65,7 @@ static void onUnsolicitedResponseShim(int unsolResponse, const void *data, size_
 			break;
 	}
 
-	rilEnv->OnUnsolicitedResponse(unsolResponse, data, datalen);
+	mEnv->OnUnsolicitedResponse(unsolResponse, data, datalen);
 }
 
 static void patchMem(void *libHandle) {
