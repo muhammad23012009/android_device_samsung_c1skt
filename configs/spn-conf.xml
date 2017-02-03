@@ -310,4 +310,12 @@ examples:
     <spnOverride numeric="65507" imsi_subset="10" spn_display_rule="SPN_RULE_SHOW_SPN" spn="Virgin" spn_override_only_on="655"/> <!-- Virgin is roaming on 'Cell C' network (same mcc-mnc) and this display rule for home country  -->
     <spnOverride numeric="65507" imsi_subset="13" spn_display_rule="SPN_RULE_SHOW_SPN" spn="Red Bull Mobile" spn_override_only_on="655"/>
 
+<!-- South Korea -->
+    <spnOverride numeric="45004" spn_display_rule="SPN_RULE_SHOW_SPN" spn="KT"/>
+    <spnOverride numeric="45008" spn_display_rule="SPN_RULE_SHOW_SPN" spn="KT"/>
+    <spnOverride numeric="45002" spn_display_rule="SPN_RULE_SHOW_SPN" spn="KT"/>
+    <spnOverride numeric="45006" spn_display_rule="SPN_RULE_SHOW_SPN" spn="LGU+"/>
+    <spnOverride numeric="45003" spn_display_rule="SPN_RULE_SHOW_SPN" spn="SKT"/>
+    <spnOverride numeric="45005" spn_display_rule="SPN_RULE_SHOW_SPN" spn="SKT"/>
+
 </spnOverrides>
