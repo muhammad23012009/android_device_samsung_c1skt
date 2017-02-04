@@ -67,8 +67,7 @@ PRODUCT_PACKAGES += \
 
 # RIL
 PRODUCT_PACKAGES += \
-	libsamsung_symbols \
-	libsecril-shim
+	libril_shim
 
 # NFC
 PRODUCT_PACKAGES += \
