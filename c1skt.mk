@@ -71,6 +71,10 @@ PRODUCT_PACKAGES += \
     SamsungServiceMode \
     tinyplay
 
+# Helper
+PRODUCT_PACKAGES += \
+    helper
+
 # RIL
 PRODUCT_PACKAGES += \
 	libril_shim
