@@ -3,3 +3,5 @@ allow untrusted_app log_device:chr_file { read write };
 allow untrusted_app self:udp_socket ioctl;
 allow untrusted_app app_data_file:file create_file_perms;
 allow untrusted_app app_data_file:dir create_dir_perms;
+allow untrusted_app sysfs:file { read };
+allow untrusted_app wifi_data_file:file { read };
