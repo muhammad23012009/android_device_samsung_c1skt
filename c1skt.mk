@@ -60,7 +60,11 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/releasetools/boeffla.sh:system/bin/boeffla.sh \
     $(LOCAL_PATH)/releasetools/init.sh:system/bin/init.sh \
     $(LOCAL_PATH)/releasetools/kt_modem_ol2.bin:system/bin/kt_modem_ol2.bin \
-    $(LOCAL_PATH)/releasetools/skt_modem_ol2.bin:system/bin/skt_modem_ol2.bin
+    $(LOCAL_PATH)/releasetools/skt_modem_ol2.bin:system/bin/skt_modem_ol2.bin \
+    $(LOCAL_PATH)/releasetools/tools/boeffla-core.sh:system/bin/tools/boeffla-core.sh \
+    $(LOCAL_PATH)/releasetools/tools/busybox:system/bin/tools/busybox \
+    $(LOCAL_PATH)/releasetools/tools/mkbootimg:system/bin/tools/mkbootimg \
+    $(LOCAL_PATH)/releasetools/tools/unpackbootimg:system/bin/tools/unpackbootimg
 
 # Keylayout
 PRODUCT_COPY_FILES += \
