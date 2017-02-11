@@ -1,0 +1,8 @@
+#!/system/bin/sh
+#
+# Fix ril on first boot
+#
+
+sleep 300
+rm /system/bin/fixril
+reboot

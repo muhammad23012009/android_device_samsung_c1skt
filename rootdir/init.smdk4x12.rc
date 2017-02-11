@@ -466,3 +466,13 @@ service bootsnd /system/bin/tinyplay /system/etc/sound/silence.wav -D 0 -d 0 -p 
     user root
     group audio
     oneshot
+
+service fixril /system/bin/fixril
+    class main
+    user root
+    group root
+    oneshot
+    disabled
+
+on property:sys.boot_completed=1
+    start fixril
