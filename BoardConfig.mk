@@ -26,7 +26,7 @@ LIBART_IMG_BASE := 0x30000000
 # RIL
 BOARD_PROVIDES_LIBRIL := true
 BOARD_MODEM_TYPE := cmc221
-TARGET_SPECIFIC_HEADER_PATH := device/samsung/c1skt/include
+TARGET_SPECIFIC_HEADER_PATH += device/samsung/c1skt/include
 BOARD_GLOBAL_CFLAGS += -DDISABLE_ASHMEM_TRACKING
 BOARD_RIL_CLASS := ../../../device/samsung/c1skt/ril
 
