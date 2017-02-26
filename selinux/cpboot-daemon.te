@@ -20,11 +20,10 @@ allow cpboot-daemon sysfs_radio:file { read write open };
 allow cpboot-daemon usbfs:dir search;
 allow cpboot-daemon self:capability dac_override;
 allow cpboot-daemon cbd_device:chr_file create_file_perms;
-allow cpboot-daemon device:chr_file { create read write open unlink };
 allow cpboot-daemon proc:file { read open };
 allow cpboot-daemon cgroup:file { read };
-allow cpboot-daemon self:capability { mknod };
 
 # FIX ME
 # allow cpboot-daemon usbfs:filesystem mount;
+# allow cpboot-daemon self:capability { mknod };
 
