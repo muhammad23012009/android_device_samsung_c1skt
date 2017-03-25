@@ -37,8 +37,8 @@ TARGET_REQUIRES_SYNCHRONOUS_SETSURFACE := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/c1skt/bluetooth
 
 # Kernel
-TARGET_KERNEL_SOURCE := kernel/samsung/smdk4412
-TARGET_KERNEL_CONFIG := lineageos_c1skt_defconfig
+TARGET_KERNEL_SOURCE := kernel/samsung/c1skt
+TARGET_KERNEL_CONFIG := c1_skt_lineageos_defconfig
 
 # Init
 TARGET_INIT_VENDOR_LIB := libinit_c1
