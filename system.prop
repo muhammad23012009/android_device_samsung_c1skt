@@ -18,6 +18,11 @@ ro.egl.destroy_after_detach=true
 pm.sleep_mode=1
 ro.ril.disable.power.collapse=0
 
+# Media
+media.stagefright.legacyencoder=true
+media.stagefright.less-secure=true
+persist.media.treble_omx=false
+
 # Ril
 ro.ril.telephony.mqanelements=6
 telephony.lteOnGsmDevice=1
