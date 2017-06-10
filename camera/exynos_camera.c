@@ -2203,7 +2203,7 @@ void exynos_camera_capture_stop(struct exynos_camera *exynos_camera)
 		exynos_camera->capture_jpeg_buffer = NULL;
 	}
 
-	if (exynos_camera->exif.enabled)
+	if (&exynos_camera->exif.enabled)
 		exynos_exif_stop(exynos_camera, &exynos_camera->exif);
 
 	exynos_camera->capture_enabled = 0;
@@ -2371,7 +2371,7 @@ int exynos_camera_preview(struct exynos_camera *exynos_camera)
 			ALOGE("%s: Error in dequeueing buffer", __func__);
 			goto error;
 		}
-		ret = exynos_camera->gralloc->lock(exynos_camera->gralloc, *window_buffer, GRALLOC_USAGE_SW_WRITE_OFTEN, 0, 0, width, height, &window_data);
+		ret = exynos_camera->gralloc->lock(exynos_camera->gralloc, *window_buffer, GRALLOC_USAGE_YUV_ADDR | GRALLOC_USAGE_SW_WRITE_OFTEN, 0, 0, width, height, &window_data);
 
 		if (window_data == NULL || ret == -EINVAL) {
 			ALOGE("%s: Unable to lock gralloc", __func__);
@@ -3487,7 +3487,7 @@ int exynos_camera_recording_enabled(struct camera_device *dev)
 }
 
 void exynos_camera_release_recording_frame(struct camera_device *dev,
-	const void __unused *opaque)
+	const void *opaque)
 {
 	struct exynos_camera *exynos_camera;
 
