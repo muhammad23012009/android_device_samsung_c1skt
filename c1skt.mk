@@ -101,7 +101,9 @@ PRODUCT_PACKAGES += \
 
 # Camera
 PRODUCT_PACKAGES += \
-    camera.smdk4x12
+    camera.smdk4x12 \
+    android.hardware.camera.provider@2.4-impl \
+    camera.device@1.0-impl
 
 # Camera FW
 PRODUCT_COPY_FILES += \
