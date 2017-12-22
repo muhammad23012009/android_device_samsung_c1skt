@@ -182,9 +182,13 @@ PRODUCT_PACKAGES := \
     libstlport \
     libsync \
     libUMP \
-    lights.smdk4x12 \
     macloader \
     tinymix
+
+# Lights
+PRODUCT_PACKAGES += \
+    android.hardware.light@2.0-impl \
+    lights.smdk4x12
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/spn-conf.xml:system/etc/spn-conf.xml
