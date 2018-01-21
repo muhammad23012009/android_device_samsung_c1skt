@@ -285,7 +285,7 @@ PRODUCT_COPY_FILES += \
 
 # Stylus gestures
 PRODUCT_PACKAGES += \
-    com.cyanogenmod.keyhandler
+    org.lineageos.keyhandler
 
 # Graphics
 PRODUCT_PROPERTY_OVERRIDES += \
