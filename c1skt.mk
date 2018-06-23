@@ -176,6 +176,9 @@ PRODUCT_PACKAGES := \
     macloader \
     tinymix
 
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/spn-conf.xml:system/etc/spn-conf.xml
+
 # MFC API
 PRODUCT_PACKAGES += \
     libsecmfcdecapi \
