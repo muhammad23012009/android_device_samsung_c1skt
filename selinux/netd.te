@@ -1,3 +1,5 @@
 allow netd init:tcp_socket { read write getopt };
 allow netd glgps:fd use;
 allow netd glgps:tcp_socket { read write getopt setopt };
+allow netd sysfs_macloader:dir r_dir_perms;
+allow netd sysfs_macloader:file rw_file_perms;

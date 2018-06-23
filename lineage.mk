@@ -2,7 +2,6 @@
 PRODUCT_RELEASE_NAME := c1skt
 
 # Inherit device configuration
-$(call inherit-product, device/samsung/smdk4412-common/common.mk)
 $(call inherit-product, device/samsung/c1skt/c1skt.mk)
 
 # Inherit from the common Open Source product configuration
