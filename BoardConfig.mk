@@ -219,7 +219,6 @@ BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/c1skt/bluetooth
 
 # Init
 TARGET_INIT_VENDOR_LIB := libinit_c1
-TARGET_LIBINIT_C1_DEFINES_FILE := device/samsung/c1skt/init/init_c1skt.cpp
 TARGET_UNIFIED_DEVICE := true
 TARGET_RELEASETOOLS_EXTENSIONS := device/samsung/c1skt/releasetools
 

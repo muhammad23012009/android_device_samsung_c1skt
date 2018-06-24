@@ -27,23 +27,70 @@
    IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <stdio.h>
+#define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
+#include <sys/_system_properties.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <android-base/properties.h>
+#include <android-base/logging.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
 #include "vendor_init.h"
 #include "property_service.h"
-#include "log.h"
-#include "util.h"
 
 #include "init_c1.h"
 
-__attribute__ ((weak))
+using android::base::GetProperty;
+using android::init::property_set;
+
+void property_override(char const prop[], char const value[])
+{
+    prop_info *pi;
+
+    pi = (prop_info*) __system_property_find(prop);
+    if (pi)
+        __system_property_update(pi, value, strlen(value));
+    else
+        __system_property_add(prop, strlen(prop), value, strlen(value));
+}
+
 void init_target_properties()
 {
+    std::string platform = GetProperty("ro.board.platform", "");
+    if (platform != ANDROID_TARGET)
+        return;
+
+    std::string bootloader = GetProperty("ro.bootloader", "");
+
+    if (bootloader.find("E210K") == 0) {
+        /* c1ktt - KT Corp (formerly Korea Telecom) */
+        property_override("ro.build.fingerprint", "samsung/c1ktt/c1ktt:4.4.4/KTU84P/E210KKTUKPJ2:user/release-keys");
+        property_override("ro.build.description", "c1ktt-user 4.4.4 KTU84P E210KKTUKPJ2 release-keys");
+        property_override("ro.product.model", "SHV-E210K");
+        property_override("ro.product.device", "c1ktt");
+    } else if (bootloader.find("E210L") == 0) {
+        /* c1lgt - LG Uplus */
+        property_override("ro.build.fingerprint", "samsung/c1lgt/c1lgt:4.4.4/KTU84P/E210LKLUKPJ2:user/release-keys");
+        property_override("ro.build.description", "c1lgt-user 4.4.4 KTU84P E210LKLUKPJ2 release-keys");
+        property_override("ro.product.model", "SHV-E210L");
+        property_override("ro.product.device", "c1lgt");
+    } else if (bootloader.find("E210S") == 0) {
+        /* c1skt - SK Telecom */
+        property_override("ro.build.fingerprint", "samsung/c1skt/c1skt:4.4.4/KTU84P/E210SKSUKPJ2:user/release-keys");
+        property_override("ro.build.description", "c1skt-user 4.4.4 KTU84P E210SKSUKPJ2 release-keys");
+        property_override("ro.product.model", "SHV-E210S");
+        property_override("ro.product.device", "c1skt");
+    } else {
+        /* DEFAULT */
+        property_override("ro.build.fingerprint", "samsung/c1skt/c1skt:4.4.4/KTU84P/E210SKSUKPJ2:user/release-keys");
+        property_override("ro.build.description", "c1skt-user 4.4.4 KTU84P E210SKSUKPJ2 release-keys");
+        property_override("ro.product.model", "SHV-E210S");
+        property_override("ro.product.device", "c1skt");
+    }
 }
 
 static int read_file2(const char *fname, char *data, int max_size)
@@ -55,7 +102,7 @@ static int read_file2(const char *fname, char *data, int max_size)
 
     fd = open(fname, O_RDONLY);
     if (fd < 0) {
-        ERROR("failed to open '%s'\n", fname);
+        LOG(INFO) << "failed to open " << fname << std::endl;
         return 0;
     }
 
