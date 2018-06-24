@@ -35,7 +35,18 @@ LOCAL_C_INCLUDES := \
 	system/media/camera/include \
 	hardware/samsung/exynos4/hal/include
 
-LOCAL_SHARED_LIBRARIES := libutils libcutils liblog libcamera_client libhardware
+LOCAL_SHARED_LIBRARIES := \
+    libutils \
+    libcutils \
+    liblog \
+    libcamera_client \
+    libhardware \
+    libgui \
+    libhidltransport \
+    libsensor \
+    android.hidl.token@1.0-utils \
+    android.hardware.graphics.bufferqueue@1.0
+
 LOCAL_PRELINK_MODULE := false
 
 ifeq ($(TARGET_SOC),exynos4x12)
@@ -49,6 +60,8 @@ endif
 LOCAL_MODULE := camera.$(TARGET_BOOTLOADER_BOARD_NAME)
 LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
 LOCAL_MODULE_TAGS := optional
+LOCAL_STATIC_LIBRARIES := libbase libarect android.hidl.token@1.0
+LOCAL_HEADER_LIBRARIES := libnativebase_headers
 
 include $(BUILD_SHARED_LIBRARY)
 
