@@ -2,3 +2,6 @@ type rfkill_device, dev_type;
 type efs_block_device, dev_type;
 type hpd_device, dev_type;
 type mfc_device, dev_type;
+
+# GPS
+type gps_device, dev_type;

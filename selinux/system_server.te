@@ -25,14 +25,3 @@ allow system_server wifi_data_file:file { read open };
 allow system_server radio_data:dir r_dir_perms;
 
 allow system_server glgps:binder transfer;
-type_transition system_server system_data_file:fifo_file gps_data_file ".gps.interface.pipe.to_jni";
-
-# Access .gps.interface.pipe.to_gpsd.
-allow system_server gps_data_file:dir rw_dir_perms;
-allow system_server gps_data_file:fifo_file { setattr rw_file_perms create };
-
-# Access /data/sensors/gps* socket
-allow system_server gps_data_file:sock_file create_file_perms;
-allow system_server gps_data_file:dir rw_dir_perms;
-allow system_server gps_data_file:file rw_file_perms;
-

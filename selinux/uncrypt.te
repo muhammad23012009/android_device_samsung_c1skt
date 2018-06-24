@@ -1,3 +1,2 @@
 allow uncrypt kmsg_device:chr_file { write };
 allow uncrypt device:dir { write };
-allow uncrypt block_device:blk_file { write open };
