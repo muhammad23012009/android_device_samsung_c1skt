@@ -72,6 +72,8 @@ BOARD_KERNEL_BASE := 0x40000000
 BOARD_KERNEL_PAGESIZE := 2048
 KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_OS)-x86/arm/arm-eabi-4.8/bin
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-eabi-
+TARGET_KERNEL_SOURCE := kernel/samsung/smdk4412
+TARGET_KERNEL_CONFIG := lineageos_c1skt_defconfig
 
 # ADB Legacy Interface
 TARGET_USES_LEGACY_ADB_INTERFACE := true
@@ -181,9 +183,6 @@ GREEN_LED_PATH := /sys/class/leds/led_g/brightness
 BLUE_LED_PATH := /sys/class/leds/led_b/brightness
 BACKLIGHT_PATH := /sys/class/backlight/panel/brightness
 
-# HIDL
-DEVICE_MANIFEST_FILE := $(LOCAL_PATH)/manifest.xml
-
 # Override healthd HAL
 BOARD_HAL_STATIC_LIBRARIES := libhealthd.exynos4
 
@@ -217,10 +216,6 @@ TARGET_REQUIRES_SYNCHRONOUS_SETSURFACE := true
 
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/c1skt/bluetooth
-
-# Kernel
-TARGET_KERNEL_SOURCE := kernel/samsung/smdk4412
-TARGET_KERNEL_CONFIG := lineageos_c1skt_defconfig
 
 # Init
 TARGET_INIT_VENDOR_LIB := libinit_c1

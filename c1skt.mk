@@ -65,6 +65,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	gps.smdk4x12
 
+# HIDL
+DEVICE_MANIFEST_FILE := $(LOCAL_PATH)/manifest.xml
+
 # OTA
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/releasetools/modem.sh:system/bin/modem.sh \
@@ -145,7 +148,7 @@ PRODUCT_COPY_FILES += \
 
 # Ril
 PRODUCT_COPY_FILES += \
-    $(COMMON_PATH)/configs/fixril:system/bin/fixril
+    $(LOCAL_PATH)/configs/fixril:system/bin/fixril
 
 # Vibrator
 PRODUCT_PACKAGES += \
