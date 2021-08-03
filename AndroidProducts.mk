@@ -15,5 +15,4 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/aosp_c1skt.mk \
-    $(LOCAL_DIR)/omni_c1skt.mk
+    $(LOCAL_DIR)/lineage_c1skt.mk
